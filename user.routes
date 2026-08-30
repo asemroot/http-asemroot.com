@@ -1,0 +1,62 @@
+// src/api/v1/users/user.routes.js
+
+const router = require("express").Router();
+
+const auth =
+require("../../../middleware/auth.middleware");
+
+const role =
+require("../../../middleware/role.middleware");
+
+
+const {
+    getUsers,
+    getUser,
+    updateUser,
+    deleteUser
+} =
+require("./user.controller");
+
+
+
+// كل مسارات المستخدمين تحتاج تسجيل دخول
+
+router.use(auth);
+
+
+// عرض المستخدمين (Admin فقط)
+
+router.get(
+"/",
+role("admin"),
+getUsers
+);
+
+
+// مستخدم واحد
+
+router.get(
+"/:id",
+getUser
+);
+
+
+// تعديل
+
+router.patch(
+"/:id",
+updateUser
+);
+
+
+// حذف (Admin فقط)
+
+router.delete(
+"/:id",
+role("admin"),
+deleteUser
+);
+
+
+
+module.exports = router;

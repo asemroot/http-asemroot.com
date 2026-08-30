@@ -1,0 +1,69 @@
+// src/search/engine/memory.adapter.js
+
+
+const SearchEngine =
+require("./search.engine");
+
+
+
+class MemoryAdapter
+extends SearchEngine{
+
+
+constructor(){
+
+super();
+
+this.indexes=[];
+
+}
+
+
+
+async index(document){
+
+this.indexes.push(document);
+
+}
+
+
+
+async remove(id){
+
+this.indexes =
+this.indexes.filter(
+item=>item.id!==id
+);
+
+}
+
+
+
+async search(query){
+
+
+const q =
+query.toLowerCase();
+
+
+
+return this.indexes.filter(item=>{
+
+
+return JSON.stringify(item)
+.toLowerCase()
+.includes(q);
+
+
+});
+
+
+}
+
+
+
+}
+
+
+module.exports =
+new MemoryAdapter();

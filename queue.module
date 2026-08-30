@@ -1,0 +1,14 @@
+import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
+import { SearchQueueService } from './search-queue.service';
+
+@Module({
+  imports: [
+    BullModule.registerQueue({
+      name: 'search-index',
+    }),
+  ],
+  providers: [SearchQueueService],
+  exports: [SearchQueueService],
+})
+export class SearchQueueModule {}

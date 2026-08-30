@@ -1,0 +1,37 @@
+// src/search/search.controller.js
+
+const service =
+require("./search.service");
+
+
+
+exports.search =
+async(req,res,next)=>{
+
+
+try{
+
+
+const result =
+await service.globalSearch(
+req.query
+);
+
+
+
+res.json({
+
+success:true,
+
+data:result
+
+});
+
+
+}catch(error){
+
+next(error);
+
+}
+
+};
