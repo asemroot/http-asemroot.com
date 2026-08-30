@@ -1,0 +1,71 @@
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+CREATE TABLE tourism (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT,
+    location TEXT,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    image TEXT,
+    rating NUMERIC(3,2),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE businesses (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT,
+    address TEXT,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    logo TEXT,
+    cover_image TEXT,
+    rating NUMERIC(3,2),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE products (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT,
+    price NUMERIC(12,2),
+    currency VARCHAR(3) DEFAULT 'USD',
+    image TEXT,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE projects (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    image TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX tourism_name_idx
+ON tourism
+USING gin(name gin_trgm_ops);
+
+CREATE INDEX businesses_name_idx
+ON businesses
+USING gin(name gin_trgm_ops);
+
+CREATE INDEX products_name_idx
+ON products
+USING gin(name gin_trgm_ops);
+
+CREATE INDEX tourism_location_idx
+ON tourism(latitude, longitude);
+
+CREATE INDEX businesses_location_idx
+ON businesses(latitude, longitude);
+
+CREATE INDEX products_location_idx
+ON products(latitude, longitude);

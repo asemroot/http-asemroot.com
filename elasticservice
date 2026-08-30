@@ -1,0 +1,36 @@
+@Injectable()
+export class ElasticService {
+
+    constructor(
+        private readonly elastic: ElasticsearchService,
+    ) {}
+
+    async indexUser(document: UserSearchDocument) {
+
+        return this.elastic.index({
+
+            index: 'users',
+
+            id: document.id,
+
+            document,
+
+            refresh: false,
+
+        });
+
+    }
+
+    async deleteUser(id: string) {
+
+        return this.elastic.delete({
+
+            index: 'users',
+
+            id,
+
+        });
+
+    }
+
+}

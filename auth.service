@@ -1,0 +1,136 @@
+// auth.service.js
+
+const User=require("../../../models/User");
+const RefreshToken=require("../../../models/RefreshToken");
+
+const {
+hashPassword,
+comparePassword
+}=require("../../../utils/password");
+
+
+const {
+generateAccessToken,
+generateRefreshToken
+}=require("../../../utils/jwt");
+
+
+
+exports.register=async(data)=>{
+
+
+const exists =
+await User.findOne({
+email:data.email
+});
+
+
+if(exists)
+throw new Error(
+"Email already exists"
+);
+
+
+
+const password =
+await hashPassword(
+data.password
+);
+
+
+
+const user =
+await User.create({
+
+name:data.name,
+
+email:data.email,
+
+password
+
+});
+
+
+
+return {
+id:user._id,
+email:user.email
+};
+
+};
+
+
+
+
+exports.login=async(data)=>{
+
+
+const user =
+await User.findOne({
+email:data.email
+})
+.select("+password");
+
+
+
+if(!user)
+throw new Error(
+"Invalid credentials"
+);
+
+
+
+const valid =
+await comparePassword(
+data.password,
+user.password
+);
+
+
+
+if(!valid)
+throw new Error(
+"Invalid credentials"
+);
+
+
+
+const accessToken =
+generateAccessToken(user);
+
+
+const refreshToken =
+generateRefreshToken(user);
+
+
+
+await RefreshToken.create({
+
+user:user._id,
+
+token:refreshToken,
+
+expiresAt:
+new Date(
+Date.now()+30*24*60*60*1000
+)
+
+});
+
+
+
+return {
+
+accessToken,
+
+refreshToken,
+
+user:{
+id:user._id,
+name:user.name,
+role:user.role
+}
+
+};
+
+};

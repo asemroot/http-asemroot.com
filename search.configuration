@@ -1,0 +1,27 @@
+// src/search/search.config.js
+
+module.exports = {
+
+models:[
+    "User",
+    "Media"
+],
+
+
+fields:{
+
+User:[
+"name",
+"email"
+],
+
+
+Media:[
+"title",
+"description"
+]
+
+}
+
+
+};

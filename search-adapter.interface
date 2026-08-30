@@ -1,0 +1,50 @@
+export interface UserSearchDocument {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  isActive: boolean;
+  createdAt: Date;
+}
+
+> cat search-adapter.interface
+// src/search/engine/search.engine.js
+
+
+class SearchEngine {
+
+
+async index(document){
+
+throw new Error(
+"index() not implemented"
+);
+
+}
+
+
+
+async search(query){
+
+throw new Error(
+"search() not implemented"
+);
+
+}
+
+
+
+async remove(id){
+
+throw new Error(
+"remove() not implemented"
+);
+
+}
+
+
+}
+
+
+module.exports =
