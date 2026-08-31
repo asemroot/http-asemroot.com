@@ -1,0 +1,105 @@
+#nearby-map {
+  max-width: 1100px;
+  margin: 1rem auto;
+  padding: 1rem;
+  border: 1px solid rgba(0,174,234,.25);
+  border-radius: 18px;
+  background: var(--card,#fff);
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+/* Toolbar */
+.nearby-map-toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.nearby-map-toolbar .btn {
+  border: 0;
+  cursor: pointer;
+}
+
+.nearby-map-toolbar .btn:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+/* Status */
+#nearbyMapStatus {
+  color: #64748b;
+  font-size: .95rem;
+}
+
+/* Map Canvas */
+.nearby-map-canvas {
+  height: 430px;
+  min-height: 280px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #e5eef3;
+}
+
+/* Results Grid */
+.nearby-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: .75rem;
+  margin-top: 1rem;
+}
+
+/* Result Card */
+.nearby-result {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  padding: .8rem 1rem;
+  border-radius: 12px;
+  background: var(--surface,#f6f9fc);
+}
+
+.nearby-result span {
+  color: #64748b;
+  font-size: .9rem;
+}
+
+/* RTL / LTR Support */
+html[dir="rtl"] .nearby-result {
+  text-align: right;
+}
+
+html[dir="ltr"] .nearby-result {
+  text-align: left;
+}
+
+/* Dark Mode */
+html[data-theme="dark"] #nearby-map {
+  background: #111827;
+}
+
+html[data-theme="dark"] .nearby-result {
+  background: #0f172a;
+}
+
+html[data-theme="dark"] #nearbyMapStatus {
+  color: #cbd5e1;
+}
+
+/* Word-break for long languages */
+.nearby-result strong,
+.nearby-result span {
+  word-break: break-word;
+}
+
+/* Small Screens */
+@media (max-width:600px){
+  .nearby-map-canvas { height: 340px; }
+  .nearby-map-toolbar { align-items: stretch; flex-direction: column; }
+}
+
+@media (max-width:400px){
+  .nearby-map-canvas { height: 300px; }
+  .nearby-result { padding: .6rem .7rem; }
+}

@@ -1,0 +1,167 @@
+import express from "express";
+import dotenv from "dotenv";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+dotenv.config();
+
+const app = express();
+
+const PORT = Number(process.env.PORT || 3001);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.json({ limit: "1mb" }));
+
+app.use(
+  express.static(
+    path.join(__dirname, "public")
+  )
+);
+
+/*
+ * Health check
+ *
+ * نستطيع استخدامه لاحقًا لمراقبة النظام.
+ */
+app.get("/api/health", (req, res) => {
+
+  res.json({
+    ok: true,
+    project: "Son GPT",
+    version: "0.1.0"
+  });
+
+});
+
+
+/*
+ * AI Provider abstraction
+ *
+ * هذه الدالة هي نقطة الاتصال المستقبلية
+ * مع نموذج الذكاء الاصطناعي.
+ *
+ * لا نربط المشروع بمزود واحد هنا.
+ */
+async function generateAIResponse({
+  messages,
+  domain,
+  language
+}) {
+
+  /*
+   * مؤقتًا لا يوجد نموذج AI حقيقي.
+   *
+   * هذه الاستجابة موجودة فقط لاختبار
+   * البنية البرمجية.
+   */
+
+  const lastMessage =
+    messages?.filter(
+      message => message.role === "user"
+    ).at(-1);
+
+  if (!lastMessage) {
+    return "لم تصلني رسالة.";
+  }
+
+  return [
+    "Son GPT يعمل حاليًا في وضع الاختبار.",
+    "",
+    `المجال: ${domain || "عام"}`,
+    `اللغة: ${language || "ar"}`,
+    "",
+    "رسالتك:",
+    lastMessage.content,
+    "",
+    "المرحلة التالية هي توصيل محرك ذكاء اصطناعي حقيقي بهذه الطبقة."
+  ].join("\n");
+}
+
+
+/*
+ * Chat API
+ */
+app.post("/api/chat", async (req, res) => {
+
+  try {
+
+    const {
+      messages,
+      domain = "general",
+      language = "ar"
+    } = req.body || {};
+
+    if (!Array.isArray(messages)) {
+
+      return res.status(400).json({
+        error: "messages يجب أن تكون مصفوفة."
+      });
+
+    }
+
+    /*
+     * حماية أولية من الطلبات الضخمة.
+     */
+    if (messages.length > 50) {
+
+      return res.status(400).json({
+        error: "عدد الرسائل كبير جدًا."
+      });
+
+    }
+
+    for (const message of messages) {
+
+      if (
+        !message ||
+        typeof message.content !== "string"
+      ) {
+
+        return res.status(400).json({
+          error: "صيغة الرسائل غير صحيحة."
+        });
+
+      }
+
+    }
+
+    const answer =
+      await generateAIResponse({
+        messages,
+        domain,
+        language
+      });
+
+    return res.json({
+      ok: true,
+      answer
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Son GPT error:",
+      error
+    );
+
+    return res.status(500).json({
+      error: "حدث خطأ داخلي في الخادم."
+    });
+
+  }
+
+});
+
+
+/*
+ * تشغيل الخادم
+ */
+app.listen(PORT, () => {
+
+  console.log(
+    `Son GPT running on http://localhost:${PORT}`
+  );
+
+});
